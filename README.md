@@ -59,8 +59,8 @@ From inside the Android Linux Terminal (the Debian VM):
 sudo apt update
 sudo apt install -y git curl
 
-git clone https://github.com/danielbodnar/android-linux-dev.git
-cd android-linux-dev
+git clone https://github.com/danielbodnar/android-home.git
+cd android-home
 
 # The takeover: Debian → Alpine (20-30 min)
 sudo ./takeover.sh
