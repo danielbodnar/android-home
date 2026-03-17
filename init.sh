@@ -30,6 +30,11 @@ elif command -v apt-get >/dev/null 2>&1; then
 		apt-get update -y
 		apt-get install -y bash curl git
 	fi
+else
+	echo "Unsupported environment: could not find 'pkg' (Termux) or 'apt-get'."
+	echo "This installer currently supports Termux and Debian/Ubuntu-like systems."
+	echo "Please ensure bash, curl, and git are installed manually, then re-run this script."
+	exit 1
 fi
 
 # ──────────────────────────────────────────────────────────────
