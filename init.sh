@@ -44,5 +44,27 @@ fi
 # The -i flag (interactive mode) is required by the Dorothy installer so that
 # bash loads startup files (e.g. .bashrc) that Dorothy's bootstrap depends on.
 # See the Dorothy README: https://github.com/bevry/dorothy#install
-bash -ic "$(curl -fsSL 'https://dorothy.bevry.me/install')" -- install \
-	--user="$DOTFILES_REPO"
+#
+# Security note:
+# We avoid executing the remote installer script directly via `curl | bash`.
+# Instead, we:
+#   1. Download it to a temporary file from a configurable URL
+#      (DOROTHY_INSTALL_URL, defaulting to the official installer URL).
+#   2. Optionally verify its integrity if DOROTHY_INSTALL_CHECKSUM is set
+#      to the expected SHA-256 checksum of the installer.
+#   3. Execute the local copy.
+#
+# This keeps behavior similar while reducing supply-chain risk and allowing
+# users to pin/audit the installer source.
+DOROTHY_INSTALL_URL="${DOROTHY_INSTALL_URL:-https://dorothy.bevry.me/install}"
+DOROTHY_INSTALL_CHECKSUM="${DOROTHY_INSTALL_CHECKSUM:-}"
+
+installer_path="$(mktemp)"
+curl -fsSL "$DOROTHY_INSTALL_URL" -o "$installer_path"
+
+if [ -n "$DOROTHY_INSTALL_CHECKSUM" ]; then
+	echo "$DOROTHY_INSTALL_CHECKSUM  $installer_path" | sha256sum -c -
+fi
+
+bash -ic "\"$installer_path\" -- install --user=\"$DOTFILES_REPO\""
+rm -f "$installer_path"
