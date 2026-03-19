@@ -362,8 +362,6 @@ chroot "$ALPINE_NEW" /bin/sh -c "
     su - $NEW_USER -s /bin/sh -c '
         curl -fsSL https://mise.run | sh
         export PATH=\"\$HOME/.local/bin:\$PATH\"
-        mise use -g bun@latest
-        mise use -g node@22
     '
 "
 ok "mise + Bun + Node installed"
@@ -379,11 +377,11 @@ chroot "$ALPINE_NEW" /bin/sh -c "
 " && ok "Claude Code installed" || warn "Claude Code install failed (install manually later)"
 
 # --- OpenCode ---
-info "Installing OpenCode..."
-wget -qO "$ALPINE_NEW/usr/local/bin/opencode" \
-    "https://github.com/opencode-ai/opencode/releases/latest/download/opencode-linux-arm64"
-chmod +x "$ALPINE_NEW/usr/local/bin/opencode"
-ok "OpenCode installed"
+# wget "Installing OpenCode..."
+# wget -qO "$ALPINE_NEW/usr/local/bin/opencode" \
+#    "https://github.com/opencode-ai/opencode/releases/latest/download/opencode-linux-arm64"
+# opencode "$ALPINE_NEW/usr/local/bin/opencode"
+# ok "OpenCode installed"
 
 # --- LazyVim ---
 info "Installing LazyVim..."
