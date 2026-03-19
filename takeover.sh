@@ -246,8 +246,8 @@ chroot "$ALPINE_NEW" /bin/sh -c '
         unzip \
         file \
         less \
-        man-db \
         mandoc \
+        mandoc-doc \
         htop \
         jq \
         strace \
@@ -312,12 +312,19 @@ ok "Packages installed"
 # --- Create user ---
 info "Creating user: $NEW_USER..."
 chroot "$ALPINE_NEW" /bin/sh -c "
-    adduser -D -g '$NEW_USER_GECOS' -s /usr/bin/nu $NEW_USER
-    adduser $NEW_USER wheel
+    # Create user (skip if already exists)
+    if ! id '$NEW_USER' >/dev/null 2>&1; then
+        adduser -D -g '$NEW_USER_GECOS' -s /usr/bin/nu $NEW_USER
+    fi
+    adduser $NEW_USER wheel 2>/dev/null || true
+
+    # sudo configuration
+    mkdir -p /etc/sudoers.d
     echo '$NEW_USER ALL=(ALL) NOPASSWD: ALL' > /etc/sudoers.d/$NEW_USER
     chmod 440 /etc/sudoers.d/$NEW_USER
 
-    # Also configure doas (Alpine's preferred sudo alternative)
+    # doas configuration (Alpine's preferred sudo alternative)
+    mkdir -p /etc/doas.d
     echo 'permit nopass :wheel' > /etc/doas.d/wheel.conf
 "
 ok "User $NEW_USER created"
